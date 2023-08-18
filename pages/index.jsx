@@ -64,6 +64,14 @@ export default function TodoList() {
         <button onClick={handleAddNewTask}>Add</button>
       </p>
       <h3>Todo</h3>
+      <p>
+        <input
+            data-testid="filterTaskTitle"
+            id="filter-task"
+            type="text"
+            placeholder="search"
+        />
+      </p>
       <ul id="incomplete-tasks">
         {tasks
           .filter((task) => !task.completed)
