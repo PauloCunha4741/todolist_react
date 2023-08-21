@@ -43,7 +43,7 @@ export default function TodoList() {
   };
 
   const handleUpdateTask = (updatedTask) => {
-    setTasks([...tasks.filter((t) => t.id !== updatedTask.id), updatedTask]);
+    setTasks([...tasks.map((t) => t.id === updatedTask.id  ? updatedTask : t)]);
   };
 
   const handleDeleteTask = (taskId) => {
@@ -61,7 +61,7 @@ export default function TodoList() {
           value={newTitleTask}
           onChange={handleNewTitleChange}
         />
-        <button onClick={handleAddNewTask}>Add</button>
+        <button className="addButton" onClick={handleAddNewTask}>Add</button>
       </p>
       <h3>Todo</h3>
       <p>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 
 const TaskItem = ({ task, onUpdateTask, onDeleteTask }) => {
   const [editMode, setEditMode] = useState(false);
@@ -43,10 +44,10 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }) => {
       )}
 
       <button className="edit" onClick={handleEditClick}>
-        Edit
+        <AiOutlineEdit /> Edit
       </button>
       <button className="delete" onClick={handleDeleteTask}>
-        Delete
+        <AiOutlineDelete /> Delete
       </button>
     </li>
   );
