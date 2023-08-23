@@ -9,11 +9,17 @@ export default function TodoList() {
   // }));
 
   const [tasks, setTasks] = useState([]);
+  const [tasks_incomplete, setIncompleteTasks] = useState([]);
+  
 
   useEffect(() => {
     fetch("/api/todos")
     .then((response) => response.json())
     .then((response) => setTasks(response));
+
+    fetch("/api/todos")
+    .then((response) => response.json())
+    .then((response) => setIncompleteTasks(response));
   }, [])
 
   const [newTitleTask, setNewTitleTask] = useState("");
@@ -23,12 +29,15 @@ export default function TodoList() {
     setNewTitleTask(e.target.value);
   };
 
+  const handleSearchChange = (e) => {
+    if (e.target.value === ""){
+      setIncompleteTasks([...tasks.filter((task) => !task.completed)]);
+    }else{
+      setIncompleteTasks([...tasks.filter((task) => task.title.includes(e.target.value))]);
+    }
+  };
+
   const handleAddNewTask = async () => {
-    // const newTask = {
-    //   id: new Date().getTime(),
-    //   title: newTitleTask,
-    //   completed: false,
-    // };
 
     const response = await fetch("api/todos", {
       method: "POST", 
@@ -38,16 +47,19 @@ export default function TodoList() {
 
     const json = await response.json();
     setTasks([...tasks, json.task]);
+    setIncompleteTasks([...tasks_incomplete, json.task]);
 
     setNewTitleTask("");
   };
 
   const handleUpdateTask = (updatedTask) => {
     setTasks([...tasks.map((t) => t.id === updatedTask.id  ? updatedTask : t)]);
+    setIncompleteTasks([...tasks_incomplete.map((t) => t.id === updatedTask.id ? updatedTask : t)]);
   };
 
   const handleDeleteTask = (taskId) => {
     setTasks([...tasks.filter((task) => task.id !== taskId)]);
+    setIncompleteTasks([...tasks_incomplete.filter((task) => task.id !== taskId)]);
   };
 
   return (
@@ -70,10 +82,11 @@ export default function TodoList() {
             id="filter-task"
             type="text"
             placeholder="search"
+            onChange={handleSearchChange}
         />
       </p>
       <ul id="incomplete-tasks">
-        {tasks
+        {tasks_incomplete
           .filter((task) => !task.completed)
           .map((task) => (
             <TaskItem
