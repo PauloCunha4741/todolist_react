@@ -5,6 +5,7 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }) => {
   const [editMode, setEditMode] = useState(false);
   const [completed, setCompleted] = useState(task.completed);
   const [title, setTitle] = useState(task.title);
+  const [completed_text, setCompletedText] = useState(task.completed ? "completed" : "incompleted");
 
   const handleEditClick = () => {
     if (editMode) {
@@ -32,7 +33,7 @@ const TaskItem = ({ task, onUpdateTask, onDeleteTask }) => {
   return (
     <li>
       <input
-        data-testid="completed"
+        data-testid={completed_text}
         type="checkbox"
         checked={completed}
         onChange={handleToggleTask}
