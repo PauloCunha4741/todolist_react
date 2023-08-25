@@ -2,14 +2,8 @@ import { useEffect, useState } from "react";
 import TaskItem from "../components/TaskItem";
 
 export default function TodoList() {
-  // const initialTasks = [1, 2, 3, 4, 5, 6].map((i) => ({
-  //   id: i,
-  //   title: `Task ${i}`,
-  //   completed: i % 2 === 0,
-  // }));
-
   const [tasks, setTasks] = useState([]);
-  const [tasks_incomplete, setIncompleteTasks] = useState([]);
+  const [incompleteTasks, setIncompleteTasks] = useState([]);
   
 
   useEffect(() => {
@@ -23,7 +17,6 @@ export default function TodoList() {
   }, [])
 
   const [newTitleTask, setNewTitleTask] = useState("");
-  const [newFilter, setNewFilter] = useState("");
 
   const handleNewTitleChange = (e) => {
     setNewTitleTask(e.target.value);
@@ -31,14 +24,13 @@ export default function TodoList() {
 
   const handleSearchChange = (e) => {
     if (e.target.value === ""){
-      setIncompleteTasks([...tasks.filter((task) => !task.completed)]);
+      setIncompleteTasks([...tasks]);
     }else{
       setIncompleteTasks([...tasks.filter((task) => task.title.includes(e.target.value))]);
     }
   };
 
   const handleAddNewTask = async () => {
-
     const response = await fetch("api/todos", {
       method: "POST", 
       headers: {"Content-Type": "application/json"}, 
@@ -47,19 +39,19 @@ export default function TodoList() {
 
     const json = await response.json();
     setTasks([...tasks, json.task]);
-    setIncompleteTasks([...tasks_incomplete, json.task]);
+    setIncompleteTasks([...incompleteTasks, json.task]);
 
     setNewTitleTask("");
   };
 
   const handleUpdateTask = (updatedTask) => {
     setTasks([...tasks.map((t) => t.id === updatedTask.id  ? updatedTask : t)]);
-    setIncompleteTasks([...tasks_incomplete.map((t) => t.id === updatedTask.id ? updatedTask : t)]);
+    setIncompleteTasks([...incompleteTasks.map((t) => t.id === updatedTask.id ? updatedTask : t)]);
   };
 
   const handleDeleteTask = (taskId) => {
     setTasks([...tasks.filter((task) => task.id !== taskId)]);
-    setIncompleteTasks([...tasks_incomplete.filter((task) => task.id !== taskId)]);
+    setIncompleteTasks([...incompleteTasks.filter((task) => task.id !== taskId)]);
   };
 
   return (
@@ -86,7 +78,7 @@ export default function TodoList() {
         />
       </p>
       <ul id="incomplete-tasks">
-        {tasks_incomplete
+        {incompleteTasks
           .filter((task) => !task.completed)
           .map((task) => (
             <TaskItem
